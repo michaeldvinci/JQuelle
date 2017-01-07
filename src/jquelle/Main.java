@@ -4,10 +4,20 @@
  */
 package jquelle;
 
+import java.awt.Dimension;
+import java.awt.Toolkit;
+import java.awt.datatransfer.DataFlavor;
+import java.awt.datatransfer.UnsupportedFlavorException;
+import java.awt.dnd.DnDConstants;
+import java.awt.dnd.DropTarget;
+import java.awt.dnd.DropTargetDropEvent;
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
 import javax.swing.JFileChooser;
+import javax.swing.JFrame;
 import javax.swing.JOptionPane;
+import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
 /**
@@ -18,6 +28,9 @@ public class Main extends javax.swing.JFrame {
 
     static JTextField addressField;
     static public String path;
+    RepoManager repoMan1;
+    Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
+    String dndPath;
     
     /**
      * Creates new form Main
@@ -33,6 +46,8 @@ public class Main extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(null, "JQuelle requires Bash for Windows. Please Install and restart!");
             System.exit(0);
         }
+        
+        repoMan1 = new RepoManager();
         
     }
 
@@ -129,7 +144,13 @@ public class Main extends javax.swing.JFrame {
     }//GEN-LAST:event_createPackageActionPerformed
 
     private void manageRepoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_manageRepoActionPerformed
-        // TODO add your handling code here:
+        //repoMan1.setDefaultCloseOperation(RepoManager.DISPOSE_ON_CLOSE);
+        //repoMan1.setLocation(dim.width/2-this.getSize().width/2, dim.height/2-this.getSize().height/2);
+        //repoMan1.setVisible(true);
+        loadDND();
+        
+        
+        
     }//GEN-LAST:event_manageRepoActionPerformed
 
     /**
@@ -171,6 +192,46 @@ public class Main extends javax.swing.JFrame {
         File h = new File(path + "\\DEBIAN\\control");
         fileThere = h.exists() && !h.isDirectory();
         return fileThere;
+    }
+    
+    public String loadDND() {
+        final JTextArea myPanel = new JTextArea();
+
+        myPanel.setDropTarget(new DropTarget() {
+            @Override
+            public synchronized void drop(DropTargetDropEvent evt) {
+                try {
+                    evt.acceptDrop(DnDConstants.ACTION_COPY);
+                    List<File> droppedFiles = (List<File>) evt
+                            .getTransferable().getTransferData(
+                                    DataFlavor.javaFileListFlavor);
+                    droppedFiles.forEach((file) -> {
+                        /*
+                        * NOTE:
+                        *  When I change this to a println,
+                        *  it prints the correct path
+                        */
+                        dndPath = file.getAbsolutePath();
+                        myPanel.setText(dndPath);
+                    });
+                } catch (UnsupportedFlavorException | IOException ex) {
+                }
+            }
+        });
+
+        myPanel.setText("Drop Icon Here");
+        
+        JFrame frame = new JFrame();
+        
+        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+        int height = 200;
+        int width = 200;
+        frame.setSize(width, height);
+        frame.add(myPanel);
+        frame.setLocationRelativeTo(null);
+        frame.setVisible(true);
+        
+        return dndPath;
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
