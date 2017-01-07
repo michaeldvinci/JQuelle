@@ -6,23 +6,16 @@ package jquelle;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
-import java.io.PrintWriter;
-import java.io.Writer;
-import javax.swing.JFileChooser;
+import javax.swing.JOptionPane;
 
 /**
  *
  * @author michaeldvinci
  */
 public class PackageCreation {
-    
-    private String filePath;
     
     static public void createPackage(String path)  throws  InterruptedException, IOException { 
         createTempScript2(path);
@@ -42,8 +35,11 @@ public class PackageCreation {
         }
 
         int exitVal = pr.waitFor();
-        System.out.println("Exited with error code "+exitVal);
+        System.out.println("Exited with error code "+ exitVal);
         System.out.println("done");
+        if (exitVal == 0) {
+            JOptionPane.showMessageDialog(null, "Congrats, .deb created on Desktop!");
+        }
     }
     
     static public void createTempScript2(String bashPath) {
@@ -57,7 +53,6 @@ public class PackageCreation {
 
             System.out.println("Done");
         } catch (IOException e) {
-                e.printStackTrace();
         } finally {
             try {
                     if (bw != null)
@@ -65,18 +60,7 @@ public class PackageCreation {
                     if (fw != null)
                             fw.close();
             } catch (IOException ex) {
-                    ex.printStackTrace();
             }
         }
     }
-    
-    public String selectFile() {
-        
-        JFileChooser fileChooser = new JFileChooser();
-        fileChooser.setCurrentDirectory(new File(System.getProperty("user.home" + "/Desktop")));
-        int result = fileChooser.showOpenDialog(null);
-        
-        return filePath;
-    }
-    
 }
