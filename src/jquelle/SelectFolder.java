@@ -14,7 +14,7 @@ import java.util.logging.Logger;
  */
 public class SelectFolder extends javax.swing.JFrame {
 
-    public String path;
+    static public String path;
     PackageCreation pkgC;
     
     /**
@@ -74,12 +74,18 @@ public class SelectFolder extends javax.swing.JFrame {
         //selectF.setVisible(false);
         System.out.println("Bash Path: " + path);
         System.out.println("");
+        String path2 = path;
+        
         try {
-            pkgC.createPackage(path);
+            pkgC.createPackage(path2);
         } catch (InterruptedException ex) {
+            System.out.println(ex);
             Logger.getLogger(SelectFolder.class.getName()).log(Level.SEVERE, null, ex);
         } catch (IOException ex) {
+            System.out.println(ex);
             Logger.getLogger(SelectFolder.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (NullPointerException ex) {
+            System.out.println(ex);
         }
         
         Main.selectFolder.dispose();
