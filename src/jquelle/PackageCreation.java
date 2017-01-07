@@ -5,8 +5,10 @@
 package jquelle;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
@@ -21,14 +23,15 @@ import javax.swing.JFileChooser;
 public class PackageCreation {
     
     private String filePath;
-    public File tempScript;
     
-    public void createPackage(String path)  throws  InterruptedException, IOException { 
-        tempScript = createTempScript(path);
+    static public void createPackage(String path)  throws  InterruptedException, IOException { 
+        createTempScript2(path);
         
         String[] env = new String[] { "path=%PATH%;C:\\Windows\\System32\\" };
+        String pathToFile = "/mnt/c/Users/Public/" + System.getProperty("user.name") + ".sh";
+        
         Runtime rt = Runtime.getRuntime();
-        Process pr = rt.exec(new String[] {"powershell", "-command", "bash.exe", "-c", tempScript.toString() }, env);
+        Process pr = rt.exec(new String[] {"powershell", "-command", "bash.exe", "-c", pathToFile }, env);
         
         BufferedReader input = new BufferedReader(new InputStreamReader(pr.getInputStream()));
  
@@ -43,21 +46,28 @@ public class PackageCreation {
         System.out.println("done");
     }
     
-    public File createTempScript(String bashPath) throws IOException {
-        File tempScript = File.createTempFile("script", null);
+    static public void createTempScript2(String bashPath) {
+        BufferedWriter bw = null;
+        FileWriter fw = null;
+        try {
+            String content = "#!/bin/bash \n cp -r " + bashPath + " /home/; \n cd /home/" + bashPath.substring(bashPath.lastIndexOf("/")+1,bashPath.length()) +"; \n chmod 755 DEBIAN;\ndpkg-deb -Zgzip -b /home/" + bashPath.substring(bashPath.lastIndexOf("/")+1,bashPath.length()) + " /mnt/c/Users/" + System.getProperty("user.name") + "/Desktop;";
+            fw = new FileWriter("C:\\Users\\Public\\" + System.getProperty("user.name") + ".sh");
+            bw = new BufferedWriter(fw);
+            bw.write(content);
 
-        Writer streamWriter = new OutputStreamWriter(new FileOutputStream(
-                tempScript));
-        PrintWriter printWriter = new PrintWriter(streamWriter);
-
-        printWriter.println("#!/bin/bash");
-        printWriter.println("cp -r " + bashPath + "/home/");
-        printWriter.println("cd /home/" + bashPath.substring(bashPath.lastIndexOf("/")+1,bashPath.length()));
-        printWriter.println("chmod 755 DEBIAN");
-        printWriter.println("dpkg-deb -Zgzip -b ./ " + "/mnt/c/Users/" + System.getProperty("user.name") + "/Desktop" );
-        printWriter.close();
-
-        return tempScript;
+            System.out.println("Done");
+        } catch (IOException e) {
+                e.printStackTrace();
+        } finally {
+            try {
+                    if (bw != null)
+                            bw.close();
+                    if (fw != null)
+                            fw.close();
+            } catch (IOException ex) {
+                    ex.printStackTrace();
+            }
+        }
     }
     
     public String selectFile() {
