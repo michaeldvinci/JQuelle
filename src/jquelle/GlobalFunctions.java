@@ -9,7 +9,9 @@ package jquelle;
  * @author michaeldvinci
  */
 public class GlobalFunctions {
-    public void test() {
+    public String test() {
+        String pass = "true";
         
+        return pass;
     }
 }
