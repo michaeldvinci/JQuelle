@@ -4,6 +4,7 @@
  */
 package jquelle;
 
+import java.io.IOException;
 import javax.swing.JFileChooser;
 import javax.swing.JTextField;
 
@@ -14,8 +15,8 @@ import javax.swing.JTextField;
 public class Main extends javax.swing.JFrame {
 
     static JTextField addressField;
-    public static SelectFolder selectFolder = new SelectFolder();
-        
+    static public String path;
+    PackageCreation pkgC; 
     
     /**
      * Creates new form Main
@@ -37,11 +38,11 @@ public class Main extends javax.swing.JFrame {
 
         jFileChooser1 = new javax.swing.JFileChooser();
         jButton1 = new javax.swing.JButton();
-        jTextField1 = new javax.swing.JTextField();
+        manageRepo = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
-        jButton1.setText("Open Folder");
+        jButton1.setText("Create Package");
         jButton1.setActionCommand("openFolder");
         jButton1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -49,9 +50,11 @@ public class Main extends javax.swing.JFrame {
             }
         });
 
-        jTextField1.addActionListener(new java.awt.event.ActionListener() {
+        manageRepo.setText("Manage Repo");
+        manageRepo.setActionCommand("openFolder");
+        manageRepo.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jTextField1ActionPerformed(evt);
+                manageRepoActionPerformed(evt);
             }
         });
 
@@ -60,22 +63,20 @@ public class Main extends javax.swing.JFrame {
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(206, 206, 206)
-                .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 238, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(211, Short.MAX_VALUE))
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jButton1)
-                .addGap(281, 281, 281))
+                .addContainerGap()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(jButton1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(manageRepo, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(198, 198, 198)
-                .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(5, 5, 5)
-                .addComponent(jButton1)
-                .addContainerGap(173, Short.MAX_VALUE))
+                .addContainerGap()
+                .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(manageRepo, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         pack();
@@ -83,12 +84,39 @@ public class Main extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        selectFolder.setVisible(true);
+        //selectFolder.setVisible(true);
+        JFileChooser chooser = new JFileChooser();
+        chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+        int result = chooser.showOpenDialog(null);
+        switch (result) {
+        case JFileChooser.APPROVE_OPTION:
+            System.out.println("Approve (Open or Save) was clicked");
+            path = chooser.getSelectedFile().getAbsolutePath();
+            System.out.println("Windows Path: " + path);
+            path = path.replaceAll(":","");
+            path = path.replace("\\", "/");
+            path = "/mnt/c/" + path.substring(2,path.length());
+            //selectF.setVisible(false);
+            System.out.println("Bash Path: " + path);
+            System.out.println("");
+            String path2 = path;
+            try {
+                PackageCreation.createPackage(path2);
+            } catch (InterruptedException | IOException | NullPointerException ex) {
+                System.out.println(ex);
+            }
+            break;
+        case JFileChooser.CANCEL_OPTION:
+            break;
+        case JFileChooser.ERROR_OPTION:
+            System.out.println("Error");
+            break;
+        }
     }//GEN-LAST:event_jButton1ActionPerformed
 
-    private void jTextField1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField1ActionPerformed
+    private void manageRepoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_manageRepoActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jTextField1ActionPerformed
+    }//GEN-LAST:event_manageRepoActionPerformed
 
     /**
      * @param args the command line arguments
@@ -128,6 +156,6 @@ public class Main extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton1;
     private javax.swing.JFileChooser jFileChooser1;
-    public javax.swing.JTextField jTextField1;
+    private javax.swing.JButton manageRepo;
     // End of variables declaration//GEN-END:variables
 }
