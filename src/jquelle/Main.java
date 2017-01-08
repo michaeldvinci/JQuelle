@@ -14,6 +14,7 @@ import java.awt.dnd.DropTargetDropEvent;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
+import javax.swing.DefaultListModel;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
@@ -31,6 +32,7 @@ public class Main extends javax.swing.JFrame {
     RepoManager repoMan1;
     Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
     String dndPath;
+    private JFrame packageFrame = new JFrame();
     
     /**
      * Creates new form Main
@@ -61,16 +63,17 @@ public class Main extends javax.swing.JFrame {
     private void initComponents() {
 
         jFileChooser1 = new javax.swing.JFileChooser();
-        createPackage = new javax.swing.JButton();
+        createDeb = new javax.swing.JButton();
         manageRepo = new javax.swing.JButton();
+        createPackage = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
-        createPackage.setText("Create Package");
-        createPackage.setActionCommand("openFolder");
-        createPackage.addActionListener(new java.awt.event.ActionListener() {
+        createDeb.setText("Create .deb");
+        createDeb.setActionCommand("openFolder");
+        createDeb.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                createPackageActionPerformed(evt);
+                createDebActionPerformed(evt);
             }
         });
 
@@ -82,32 +85,43 @@ public class Main extends javax.swing.JFrame {
             }
         });
 
+        createPackage.setText("Packages.bz2");
+        createPackage.setActionCommand("openFolder");
+        createPackage.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                createPackageActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(55, 55, 55)
+                .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(createPackage, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(manageRepo, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap(63, Short.MAX_VALUE))
+                    .addComponent(createDeb, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(manageRepo, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(createPackage, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 127, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap(34, Short.MAX_VALUE)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addContainerGap(24, Short.MAX_VALUE)
                 .addComponent(createPackage, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(createDeb, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(manageRepo, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(22, 22, 22))
+                .addContainerGap())
         );
 
         pack();
         setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
-    private void createPackageActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_createPackageActionPerformed
+    private void createDebActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_createDebActionPerformed
         //selectFolder.setVisible(true);
         JFileChooser chooser = new JFileChooser();
         chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
@@ -141,7 +155,7 @@ public class Main extends javax.swing.JFrame {
             System.out.println("Error");
             break;
         }
-    }//GEN-LAST:event_createPackageActionPerformed
+    }//GEN-LAST:event_createDebActionPerformed
 
     private void manageRepoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_manageRepoActionPerformed
         //repoMan1.setDefaultCloseOperation(RepoManager.DISPOSE_ON_CLOSE);
@@ -152,6 +166,10 @@ public class Main extends javax.swing.JFrame {
         
         
     }//GEN-LAST:event_manageRepoActionPerformed
+
+    private void createPackageActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_createPackageActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_createPackageActionPerformed
 
     /**
      * @param args the command line arguments
@@ -195,9 +213,20 @@ public class Main extends javax.swing.JFrame {
     }
     
     public String loadDND() {
-        final JTextArea myPanel = new JTextArea();
+        
+        outPanel = new javax.swing.JPanel();
+        jLabel1 = new javax.swing.JLabel();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        model = new DefaultListModel();
+        outList = new javax.swing.JList<>(model);
+        createPackages = new javax.swing.JButton();
+        packBack = new javax.swing.JButton();
 
-        myPanel.setDropTarget(new DropTarget() {
+        outPanel.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0), 2));
+
+        javax.swing.GroupLayout outPanelLayout = new javax.swing.GroupLayout(outPanel);
+        outPanel.setLayout(outPanelLayout);
+        outPanel.setDropTarget(new DropTarget() {
             @Override
             public synchronized void drop(DropTargetDropEvent evt) {
                 try {
@@ -206,35 +235,111 @@ public class Main extends javax.swing.JFrame {
                             .getTransferable().getTransferData(
                                     DataFlavor.javaFileListFlavor);
                     droppedFiles.forEach((file) -> {
-                        /*
-                        * NOTE:
-                        *  When I change this to a println,
-                        *  it prints the correct path
-                        */
                         dndPath = file.getAbsolutePath();
-                        myPanel.setText(dndPath);
+                        
+                        model.addElement(dndPath + "\n");
+                        System.out.println(model);
                     });
                 } catch (UnsupportedFlavorException | IOException ex) {
                 }
             }
         });
+        outPanelLayout.setHorizontalGroup(
+            outPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 0, Short.MAX_VALUE)
+        );
+        outPanelLayout.setVerticalGroup(
+            outPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 134, Short.MAX_VALUE)
+        );
+        
+        jLabel1.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jLabel1.setText("Drop File Here");
 
-        myPanel.setText("Drop Icon Here");
+        jScrollPane2.setViewportView(outList);
         
-        JFrame frame = new JFrame();
+        createPackages.setText("Create Packages.bz2");
+        createPackages.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                createPackagesActionPerformed(evt);
+            }
+        });
+
+        packBack.setText("<");
+        packBack.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                packBackActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
+        getContentPane().setLayout(layout);
+        layout.setHorizontalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                    .addComponent(outPanel, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(packBack)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(createPackages, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 265, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
+        );
+        layout.setVerticalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(layout.createSequentialGroup()
+                .addGap(8, 8, 8)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 162, Short.MAX_VALUE)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel1)
+                            .addComponent(packBack, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(outPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(createPackages, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap())
+        );
+
+        pack();
         
-        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-        int height = 200;
-        int width = 200;
-        frame.setSize(width, height);
-        frame.add(myPanel);
-        frame.setLocationRelativeTo(null);
-        frame.setVisible(true);
+        createDeb.setVisible(false);
+        manageRepo.setVisible(false);
+        createPackage.setVisible(false);
         
         return dndPath;
     }
+    
+    private void createPackagesActionPerformed(java.awt.event.ActionEvent evt) {                                               
+        // TODO add your handling code here:
+    } 
+    
+    private void packBackActionPerformed(java.awt.event.ActionEvent evt) {                                         
+        jLabel1.setVisible(false);
+        jScrollPane2.setVisible(false);
+        outList.setVisible(false);
+        outPanel.setVisible(false);
+        packBack.setVisible(false);
+        
+        initComponents();
+    } 
 
+    private DefaultListModel model;
+    private javax.swing.JButton createPackages;
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JList<String> outList;
+    private javax.swing.JPanel outPanel;
+    private javax.swing.JButton packBack;
+    
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton createDeb;
     private javax.swing.JButton createPackage;
     private javax.swing.JFileChooser jFileChooser1;
     private javax.swing.JButton manageRepo;
